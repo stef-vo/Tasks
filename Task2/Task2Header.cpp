@@ -203,6 +203,12 @@ std::ostream& operator<<(std::ostream& os, const Metadata  &rhs)
 	} // end of else
 	return os;
 } // end of method
+
+Type Metadata::get_Type() const
+{
+	return m_type;
+}
+
 } // end of namespace
 
 

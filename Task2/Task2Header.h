@@ -6,7 +6,7 @@ namespace ISXMetadata
 {
 class WrongDataType;
 
-const enum class Type
+enum class Type
 {
     UNDEFINED,
     BOOL,
@@ -71,11 +71,8 @@ public:
 	friend void swap(Metadata& lhs, Metadata& rhs);
 
 	/* Gets the type of enum. */ 
-	Type get_Type() const
-	{
-		return m_type;
-	}
-	
+	Type get_Type() const;
+		
 private:
 	/* Type of enum. */ 
 	Type m_type;
