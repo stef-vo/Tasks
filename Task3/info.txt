@@ -1,0 +1,5 @@
+Total files: 20
+Total lines: 600
+Total code lines: 420
+Total blank lines: 60
+Total comment lines: 120
