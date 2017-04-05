@@ -1,13 +1,12 @@
 #include "Header.h"
 
-// Counts the number of files with extensions from vector ext_vector
-// in directory dir including subdirectories 
-unsigned HowManyFiles(const std::string dir, const std::vector<std::string> ext_vector,
-					  std::vector <std::string> & file_names)
+// Counts files 
+int CountFiles(std::string dir, std::vector<std::string> ext_vector, std::vector <std::string> & file_names)
 {    
-    unsigned files_counter = 0;
-	for (unsigned i = 0; i < ext_vector.size(); i++)
+	int files_counter = 0;
+	for (int i = 0; i < ext_vector.size(); i++)
 	{
+		
 		std::string ext(ext_vector[i]);
 		boost::filesystem::recursive_directory_iterator current(dir);  
 		boost::filesystem::recursive_directory_iterator end;
@@ -22,7 +21,7 @@ unsigned HowManyFiles(const std::string dir, const std::vector<std::string> ext_
 }
 
 /* Checks if str is blank. */
-bool isBlank(const std::string str)
+bool IsBlank(const std::string str)
 {
 	int n = str.length();
 	for (int i = 0; i < n; ++i)
@@ -31,70 +30,46 @@ bool isBlank(const std::string str)
 	return true;
 }
 
-/* Counts blank lines in file_str.*/
-unsigned CountBlankLines(const std::string file_str)
+/* Counts lines in file_str. */
+void CountLines(std::string file_str, int & blank_lines, int & comment_lines, int & code_lines, int & all_lines)
 {
-    unsigned blank_lines = 0;
+	blank_lines = 0;
+	comment_lines = 0;
+	code_lines = 0;
+	all_lines = 0;
+	
 	std::ifstream file;
 	file.open(file_str, std::ifstream::in);
-	std::string line;
-	while(getline(file, line))
+	if (file.fail())
 	{
-		if (isBlank(line))
-			blank_lines++;
+		std::cout << "Error opening files.\n";
+		return;
 	}
-	file.close();
-	return blank_lines;
-}
 
-/* Counts lines in comments. */
-unsigned CountCommentLines(const std::string file_str)
-{
-    unsigned comments = 0;
-	std::ifstream file;
-	file.open(file_str, std::ifstream::in);
 	std::string line;
 	bool in_multi_line_comment = false;
 	while(getline(file, line))
 	{
-		if (!in_multi_line_comment && line.find("/*") != std::string::npos)
-        in_multi_line_comment = true;
+		all_lines++;
 
-		if (in_multi_line_comment || line.find("//") != std::string::npos)
-        comments++;
+		if (IsBlank(line))
+		{
+		blank_lines++;
+		}
+		else
+		{
+			if (!in_multi_line_comment && line.find("/*") != std::string::npos)
+			in_multi_line_comment = true;
 
-		if (in_multi_line_comment && line.find("*/") != std::string::npos)
-        in_multi_line_comment = false;
+			if (in_multi_line_comment || line.find("//") != std::string::npos)
+			comment_lines++;
+
+			if (in_multi_line_comment && line.find("*/") != std::string::npos)
+			in_multi_line_comment = false;
+		}
 	}
+	code_lines = all_lines - blank_lines - comment_lines; 
 	file.close();
-	return comments;
+	return;
 }
 
-/* Counts all the lines in file_str. */
-unsigned CountAllLines(const std::string file_str)
-{
-    unsigned lines = 0;
-	std::ifstream file;
-	file.open(file_str, std::ifstream::in);
-	std::string line;
-	while(getline(file, line))
-		lines++;
-	file.close();
-	return lines;
-}
-
-/* Counts code lines in file_str. */
-unsigned CountCodeLines(const std::string file_str)
-{
-    return CountAllLines(file_str) - CountCommentLines(file_str) - CountBlankLines(file_str);
-}
-
-/* Gets information on file_str. */
-void GetFileInfo(const std::string file_str, unsigned& all_lines, unsigned& code_lines,
-					 unsigned& blank_lines, unsigned& comment_lines)
-{
-    all_lines = CountAllLines(file_str);
-	code_lines = CountCodeLines(file_str);
-	blank_lines = CountBlankLines(file_str);
-	comment_lines = CountCommentLines(file_str);
-}

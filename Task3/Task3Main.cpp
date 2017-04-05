@@ -1,10 +1,3 @@
-///
-/// To test the code 
-/// make sure that you have E:\\Root as a root directory
-/// and there is a file "file.cpp" in the root directory or one of it's subdirectories.
-/// The info will be saved in info.txt on disk E:
-///
-
 #include "Header.h"
 
 using namespace std::chrono;
@@ -21,55 +14,33 @@ int main()
 	ext_vector.push_back(".h");
 	ext_vector.push_back(".hpp");
 
-	std::cout << "Find files with extensions:\n";
+	std::string dir("E:\\Boost\\boost_1_52_0"); // path to the root directory may be changed if you like
+	std::cout << "Looking for files with extensions";
 	for (it = ext_vector.begin(); it<ext_vector.end(); it++)
 		std::cout << ' ' << *it;
-	std::cout << "\n\n";
+	std::cout << " in directory " << dir << "." << "\n\n";
 
-    std::string dir("E:\\Root"); // path to the root directory may be changed as you wish
 	std::vector <std::string> file_names; // vector of file names with given extensions
 	std::cout << "Files in " << dir << " with these extensions found: ";
-	int n = HowManyFiles(dir, ext_vector, file_names);
-	std::cout << n; // n is a total number of files found
+	int total_num_files = CountFiles(dir, ext_vector, file_names);
+	std::cout << total_num_files;
 	std::cout << "\n\n";
 
-	std::cout << "Files found: \n";
-	for (int i = 0; i < n; ++i)
-		std::cout << file_names[i] << "\n";
-	std::cout << "\n";
+	//std::string file_name("E:\\Root\\file.cpp"); // display info about one file
 	
-	std::string file_name("E:\\Root\\file.cpp"); // display info about one file
-	
-	std::cout << "The number of blank lines in " << file_name << " is:     ";
-	std::cout << CountBlankLines(file_name);
-	std::cout << "\n";
-
-	std::cout << "The number of comment lines in " << file_name << " is:   ";
-	std::cout << CountCommentLines(file_name);
-	std::cout << "\n";
-
-	std::cout << "Total number of lines in " << file_name << " is:        ";
-	std::cout << CountAllLines(file_name);
-	std::cout << "\n";
-
-	std::cout << "The number of code lines in " << file_name << " is:     ";
-	std::cout << CountCodeLines(file_name);
-	std::cout << "\n\n";
-
+	int blank_lines;
+	int comment_lines;
+	int code_lines;
+	int all_lines;
+		
 	const int num_threads = 4; // number of threads (may be changed as you wish)
-	int num_cycles = n % num_threads; // so we have num_threads threads in every cycle
-
-	// announce variables for one file
-	unsigned all_lines;
-	unsigned code_lines;
-	unsigned blank_lines;
-	unsigned comment_lines;
+	int num_cycles = total_num_files % num_threads; // so we have num_threads threads in every cycle
 
 	// announce and initialize variables for all the files in root directory
-	unsigned total_lines = 0;
-	unsigned total_code_lines = 0;
-	unsigned total_blank_lines = 0;
-	unsigned total_comment_lines = 0;
+	int total_lines = 0;
+	int total_code_lines = 0;
+	int total_blank_lines = 0;
+	int total_comment_lines = 0;
 
 	// creating threads
 	for (int i = 0; i < num_cycles; ++i)
@@ -77,19 +48,14 @@ int main()
 		std::thread *tt = new std::thread[num_threads];
 		for (int j = 0; j < num_threads; ++j)
 		{
-			all_lines = CountAllLines(file_names[num_threads * i + j]);
-			code_lines = CountCodeLines(file_names[num_threads * i + j]);
-			blank_lines = CountBlankLines(file_names[num_threads * i + j]);
-			comment_lines = CountCommentLines(file_names[num_threads * i + j]);
-			
+			tt[j] = std::thread(CountLines, file_names[num_threads * i + j],
+				std::ref(blank_lines), std::ref(comment_lines), 
+				std::ref(code_lines), std::ref(all_lines));
+
 			total_lines += all_lines;
 			total_code_lines += code_lines;
 			total_blank_lines += blank_lines;
 			total_comment_lines += comment_lines;
-			
-			tt[j] = std::thread(GetFileInfo, std::ref(file_names[num_threads * i + j]),
-				std::ref(all_lines), std::ref(code_lines),
-				std::ref(blank_lines), std::ref(comment_lines));
 		}
 
 		for (int j = 0; j < num_threads; ++j)
@@ -98,46 +64,51 @@ int main()
 		delete[] tt;
 	}
 
-	// still (n - num_cycles * num_threads) files left
-	for (int j = num_cycles * num_threads; j < n; j++)
+	// still (total_num_files - num_cycles * num_threads) files left
+	for (int j = num_cycles * num_threads; j < total_num_files; j++)
 	{
-		all_lines = CountAllLines(file_names[j]);
-		code_lines = CountCodeLines(file_names[j]);
-		blank_lines = CountBlankLines(file_names[j]);
-		comment_lines = CountCommentLines(file_names[j]);
-			
+		CountLines(file_names[j], blank_lines, comment_lines, code_lines, all_lines);
+		
 		total_lines += all_lines;
 		total_code_lines += code_lines;
 		total_blank_lines += blank_lines;
 		total_comment_lines += comment_lines;
 	}
-
+			
 	// display output
-	std::cout << "Display information on root directory" << "\n\n";
-	std::cout << "Total files:          " << n << "\n";
-	std::cout << "Total lines:         " << total_lines << "\n";
-	std::cout << "Total code lines:    " << total_code_lines << "\n";
+	std::cout << "Display information on root directory " << dir << "\n\n";
+	std::cout << "Total files:           " << total_num_files << "\n";
 	std::cout << "Total blank lines:    " << total_blank_lines << "\n";
-	std::cout << "Total comment lines: " << total_comment_lines << "\n\n";
-	
-	// output to the file E:\\info.txt; you can change file path as you wish
-	std::ofstream output_file;
-	output_file.open("E:\\info.txt");
-	if (output_file.is_open())
-	{
-		output_file << "Total files: " << n << "\n";
-		output_file << "Total lines: " << total_lines << "\n";
-		output_file << "Total code lines: " << total_code_lines << "\n";
-		output_file << "Total blank lines: " << total_blank_lines << "\n";
-		output_file << "Total comment lines: " << total_comment_lines << "\n";
-		output_file.close();
-	}
-	
+	std::cout << "Total comment lines:  " << total_comment_lines << "\n";
+	std::cout << "Total code lines:    " << total_code_lines << "\n";
+	std::cout << "Total lines:         " << total_lines << "\n\n";
+		
 	std::cout << "It took ";
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>( t2 - t1 ).count();
 	std::cout << duration << " milliseconds to run this program with " << num_threads << " threads";
 	std::cout << "\n\n";
+
+	// output to the file E:\\info.txt; you can change file path if you like
+	std::ofstream output_file;
+	output_file.open("E:\\info.txt");
+	if (output_file.is_open())
+	{
+		output_file << "Root directory " << dir << "\n\n";
+		output_file << "Total files:           " << total_num_files << "\n";
+		output_file << "Total blank lines:    " << total_blank_lines << "\n";
+		output_file << "Total comment lines:  " << total_comment_lines << "\n";
+		output_file << "Total code lines:    " << total_code_lines << "\n";
+		output_file << "Total lines:         " << total_lines << "\n\n";
+		output_file << "It took " << duration / 1000 <<
+			" seconds to run this program with " << num_threads << " threads"; 
+		output_file.close();
+	}
+	else
+	{
+		std::cout << "Impossible to open output file.";
+		return 1;
+	}
 	
 	// it's all folks
 	return 0;

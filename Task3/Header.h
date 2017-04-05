@@ -1,22 +1,14 @@
-#ifndef _HEADER_H_
-#define _HEADER_H_
+#pragma once
+
 #include <boost/filesystem.hpp>
 #include <thread>
 #include <chrono>
 
-unsigned HowManyFiles(const std::string dir, const std::vector<std::string> ext_vector,
-					  std::vector <std::string> & file_names);
+// Counts files 
+int CountFiles(std::string dir, std::vector<std::string> ext_vector, std::vector <std::string> & file_names);
 
-bool isBlank(const std::string str);
+/* Checks if str is blank. */
+bool IsBlank(const std::string str);
 
-unsigned CountBlankLines(const std::string file_str);
-
-unsigned CountCommentLines(const std::string file_str);
-
-unsigned CountAllLines(const std::string file_str);
-
-unsigned CountCodeLines(const std::string file_str);
-
-void GetFileInfo(const std::string file_str, unsigned& all_lines, unsigned& code_lines,
-					 unsigned& blank_lines, unsigned& comment_lines);
-#endif
+/* Counts lines in file_str. */
+void CountLines(std::string file_str, int & blank_lines, int & comment_lines, int & code_lines, int & all_lines);
