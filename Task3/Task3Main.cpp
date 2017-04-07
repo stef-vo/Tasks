@@ -20,7 +20,7 @@ int main()
 		std::cout << ' ' << *it;
 	//std::cout << "\n";
 
-    std::string dir("E:\\Boost\\boost_1_52_0\\boost\\asio"); // path to the root directory may be changed as you wish
+	std::string dir("E:\\Boost\\boost_1_52_0\\boost\\asio"); // path to the root directory may be changed as you wish
 	std::queue <std::string> file_names; // vector of file names with given extensions
 	std::cout << "\n" << "in directory " << dir << "\n\n";
 	std::cout << "Wait a little!" << "\n\n";

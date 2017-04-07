@@ -42,7 +42,7 @@ bool IsBlank(const std::string & str)
 void CountLines(std::fstream & file, unsigned & lines, unsigned & code_lines,
 	unsigned & blank_lines, unsigned & comment_lines)
 {
-    lines = 0;
+	lines = 0;
 	blank_lines = 0;
 	comment_lines = 0;
 	bool in_multi_line_comment = false;
