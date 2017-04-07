@@ -82,17 +82,17 @@ const char* Metadata::get_TypeName() const
 	{
 	case Type::BOOL: return "bool"; 
 	case Type::SHORT: return "short"; 
-    case Type::INT: return "int"; 
-    case Type::LONG: return "long"; 
-    case Type::LONG_LONG: return "long long"; 
-    case Type::CHAR: return "char"; 
-    case Type::WCHAR_T: return "wchar_t"; 
-    case Type::FLOAT: return "float"; 
-    case Type::DOUBLE: return "double"; 
-    case Type::LONG_DOUBLE: return "long double";
+	case Type::INT: return "int"; 
+	case Type::LONG: return "long"; 
+	case Type::LONG_LONG: return "long long"; 
+	case Type::CHAR: return "char"; 
+	case Type::WCHAR_T: return "wchar_t"; 
+	case Type::FLOAT: return "float"; 
+	case Type::DOUBLE: return "double"; 
+	case Type::LONG_DOUBLE: return "long double";
 	case Type::UNDEFINED: return "undefined";
 	defaut: return "undefined";
-	}
+}
 }
 
 
@@ -203,6 +203,12 @@ std::ostream& operator<<(std::ostream& os, const Metadata  &rhs)
 	} // end of else
 	return os;
 } // end of method
+
+Type Metadata::get_Type() const
+{
+	return m_type;
+}
+
 } // end of namespace
 
 

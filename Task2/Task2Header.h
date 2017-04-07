@@ -6,7 +6,7 @@ namespace ISXMetadata
 {
 class WrongDataType;
 
-const enum class Type
+enum class Type
 {
     UNDEFINED,
     BOOL,
@@ -24,25 +24,25 @@ const enum class Type
 class Metadata
 {
 public:
-    /* Default constructor. */
+	/* Default constructor. */
 	Metadata(); 
-    /* Copy constructor. */
+	/* Copy constructor. */
 	Metadata(const Metadata&); 
 	/* Move constructor. */
 	Metadata(Metadata&&); 
 	/* Parametrized constructors. */
-    Metadata(bool bool_data);
-    Metadata(short short_data);
-    Metadata(int int_data);
-    Metadata(long long_data);
-    Metadata(long long long_long_data);
-    Metadata(char char_data);
+	Metadata(bool bool_data);
+	Metadata(short short_data);
+	Metadata(int int_data);
+	Metadata(long long_data);
+	Metadata(long long long_long_data);
+	Metadata(char char_data);
 	Metadata(wchar_t wchar_t_data);
 	Metadata(float float_data);
-    Metadata(double double_data);
-    Metadata(long double long_double_data);
+	Metadata(double double_data);
+	Metadata(long double long_double_data);
 	/* Destructor. */
-    ~Metadata();
+	~Metadata();
 
 	/* Copy assignment operator. */
 	Metadata& operator=(const Metadata& rhs); 
@@ -71,11 +71,8 @@ public:
 	friend void swap(Metadata& lhs, Metadata& rhs);
 
 	/* Gets the type of enum. */ 
-	Type get_Type() const
-	{
-		return m_type;
-	}
-	
+	Type get_Type() const;
+		
 private:
 	/* Type of enum. */ 
 	Type m_type;
@@ -83,7 +80,7 @@ private:
 	union Var
 	{
 		bool bool_data;
-        short short_data;
+		short short_data;
 		int int_data;
 		long long_data;
 		long long long_long_data;
