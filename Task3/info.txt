@@ -1,9 +1,5 @@
-Root directory E:\Boost\boost_1_52_0
-
-Total files:           17461
-Total blank lines:    408171
-Total comment lines:  463919
-Total code lines:    1927731
-Total lines:         2799822
-
-It took 214 seconds to run this program with 4 threads
+Total files: 304
+Total lines: 60685
+Total code lines: 29838
+Total blank lines: 7968
+Total comment lines: 22879
