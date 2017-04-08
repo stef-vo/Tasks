@@ -24,7 +24,7 @@ void GetResult(std::queue <std::string> & Tasks, unsigned & total_lines,
 
 
 // Prints files info
-void PrintResult(unsigned & total_files, unsigned & total_lines, unsigned & total_code_lines,
-	unsigned & total_blank_lines, unsigned & total_comment_lines);
+void PrintResult(const unsigned & total_files, const unsigned & total_lines, const unsigned & total_code_lines,
+	const unsigned & total_blank_lines, const unsigned & total_comment_lines);
 
 

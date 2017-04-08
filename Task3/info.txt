@@ -1,5 +1,5 @@
-Total files: 304
-Total lines: 60685
-Total code lines: 29838
-Total blank lines: 7968
-Total comment lines: 22879
+Total files: 8787
+Total lines: 1719676
+Total code lines: 1194531
+Total blank lines: 243392
+Total comment lines: 281753

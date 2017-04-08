@@ -4,8 +4,6 @@ using namespace std::chrono;
 
 int main()
 {
-	high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
 	// Create vector of extensions
 	std::vector<std::string> ext_vector;
 	std::vector<std::string>::iterator it;
@@ -18,43 +16,68 @@ int main()
 	std::cout << "with the extensions ";
 	for (it = ext_vector.begin(); it<ext_vector.end(); it++)
 		std::cout << ' ' << *it;
-	//std::cout << "\n";
+	
+	std::string dir;
+	unsigned input_counter = 0;
+	const unsigned max_input_num = 2; 
+	while(true)
+	{
+		std::cout << "\n\n" << "Please input full path to root directory:";
+		std::cout << "\n" << "For example: E:\\\\Boost\\\\boost_1_52_0" << "\n";
+		std::cin >> dir;
+		input_counter++;
 
-	std::string dir("E:\\Boost\\boost_1_52_0\\boost\\asio"); // path to the root directory may be changed as you wish
+		if (input_counter > max_input_num)
+		{
+			std::cout << "\n" << "You couldn't write a directory name correctly.\n";
+			std::cout << "Exit the program" << "\n";
+			exit(1);
+		}
+
+		if (!boost::filesystem::is_directory(dir))
+		{
+			std::cout << "\n" << "You didn't write a directory name correctly.";
+			continue;
+		}
+		break;
+	}
+	
+	high_resolution_clock::time_point t1 = high_resolution_clock::now();
+
 	std::queue <std::string> file_names; // vector of file names with given extensions
-	std::cout << "\n" << "in directory " << dir << "\n\n";
-	std::cout << "Wait a little!" << "\n\n";
+	std::cout << "\n" << "Wait a little!" << "\n\n";
 	unsigned num_files;
 	CreateQueue(dir, ext_vector, file_names, num_files);
 	
-	unsigned total_lines;
-	unsigned total_code_lines;
-	unsigned total_blank_lines;
-	unsigned total_comment_lines;
+	unsigned total_lines = 0;
+	unsigned total_code_lines = 0;
+	unsigned total_blank_lines = 0;
+	unsigned total_comment_lines = 0;
 
-	GetResult(file_names, total_lines, total_code_lines, total_blank_lines, total_comment_lines);
-
-	PrintResult(num_files, total_lines, total_code_lines, total_blank_lines, total_comment_lines);
-	
 	unsigned num_threads = std::thread::hardware_concurrency();
 
-		std::thread *tt = new std::thread[num_threads];
-		for (unsigned j = 0; j < num_threads; ++j)
-		{
-			tt[j] = std::thread(GetResult, std::ref(file_names), std::ref(total_lines),
-				std::ref(total_code_lines), std::ref(total_blank_lines),
-				std::ref(total_comment_lines));
-		}
+	std::thread *tt = new std::thread[num_threads];
+	for (unsigned j = 0; j < num_threads; ++j)
+	{
+		tt[j] = std::thread(GetResult, std::ref(file_names), std::ref(total_lines),
+			std::ref(total_code_lines), std::ref(total_blank_lines),
+			std::ref(total_comment_lines));
+	}
 
-		for (unsigned j = 0; j < num_threads; ++j)
-			tt[j].join();
+	for (unsigned j = 0; j < num_threads; ++j)
+		tt[j].join();
 		
-		delete[] tt;
-	
+	delete[] tt;
+
+
 	std::cout << "\nIt took the program ";
 	high_resolution_clock::time_point t2 = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>( t2 - t1 ).count();
-	std::cout << duration << " milliseconds to run with " << num_threads << " threads";
+	std::cout << duration << " milliseconds to search with " << num_threads << " threads";
+	std::cout << "\n\n";
+
+	PrintResult(num_files, total_lines, total_code_lines, total_blank_lines, total_comment_lines);
+	
 	std::cout << "\n\n";
 
 	return 0;
