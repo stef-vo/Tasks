@@ -3,4 +3,4 @@ Total lines: 1719676
 Total code lines: 1194531
 Total blank lines: 243392
 Total comment lines: 281753
-It took the program 42046 milliseconds to search with 4 threads
+It took the program 42775 milliseconds to search with 4 threads

@@ -1,10 +1,10 @@
 #include "Header.h"
 
-std::mutex result_mutex;
+static std::mutex result_mutex;
 
-/* Creates queue of files Tasks with extensions ext_vector in directory dir. */
+/* Creates queue of files tasks with extensions ext_vector in directory dir. */
 void CreateQueue(std::string dir, std::vector<std::string> ext_vector,
-				std::queue <std::string> & Tasks, unsigned & total_files)
+				std::queue <std::string> & tasks, unsigned & total_files)
 {
 	total_files = 0;
 	boost::filesystem::recursive_directory_iterator current(dir);  
@@ -18,7 +18,7 @@ void CreateQueue(std::string dir, std::vector<std::string> ext_vector,
 				&& ext.compare((*current).path().extension().string()) == 0)
 				{
 					++total_files;
-					Tasks.push((*current).path().string());
+					tasks.push((*current).path().string());
 				}
 		}
 	}
@@ -64,7 +64,7 @@ void CountLines(std::fstream & file, unsigned & lines, unsigned & code_lines,
 }
 
 /* Gets files from the queue. */
-void GetResult(std::queue <std::string> & Tasks, std::atomic<unsigned> & total_lines,
+void GetResult(std::queue <std::string> & tasks, std::atomic<unsigned> & total_lines,
 				std::atomic<unsigned> & total_code_lines, std::atomic<unsigned> & total_blank_lines,
 				std::atomic<unsigned> & total_comment_lines)
 {
@@ -72,16 +72,15 @@ void GetResult(std::queue <std::string> & Tasks, std::atomic<unsigned> & total_l
 	unsigned blank_lines;
 	unsigned comment_lines;
 	unsigned code_lines;
-	
-	
-	while(!Tasks.empty())
+
+	while(!tasks.empty())
 	{
 		std::string file_str;
 		result_mutex.lock();
-		if (Tasks.size() != 0)
+		if (tasks.size() != 0)
 		{
-			file_str = Tasks.front();
-			Tasks.pop();
+			file_str = tasks.front();
+			tasks.pop();
 		}
 		else
 		{
