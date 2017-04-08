@@ -14,34 +14,31 @@ int main()
 
 	std::cout << "The task is to print info about all the files\n";
 	std::cout << "with the extensions ";
-	for (it = ext_vector.begin(); it<ext_vector.end(); it++)
+	for (it = ext_vector.begin(); it<ext_vector.end(); ++it)
 		std::cout << ' ' << *it;
 	
 	std::string dir;
 	unsigned input_counter = 0;
 	const unsigned max_input_num = 2; 
-	while(true)
+	for (int i = 0; i <= max_input_num; ++i)
 	{
-		std::cout << "\n\n" << "Please input full path to root directory:";
-		std::cout << "\n" << "For example: E:\\\\Boost\\\\boost_1_52_0" << "\n";
+		std::cout << "\n\n" << "Please input the correct path to root directory:";
+		std::cout << "\n" << "For example: E:\\\\Boost\\\\boost_1_52_0" 
+			<< " or E:/Boost/boost_1_52_0" << "\n";
 		std::cin >> dir;
-		input_counter++;
 
-		if (input_counter > max_input_num)
+		if (boost::filesystem::is_directory(dir))
 		{
-			std::cout << "\n" << "You couldn't write a directory name correctly.\n";
-			std::cout << "Exit the program" << "\n";
-			exit(1);
+			break;
 		}
-
-		if (!boost::filesystem::is_directory(dir))
+		else if (i == max_input_num)
 		{
-			std::cout << "\n" << "You didn't write a directory name correctly.";
-			continue;
+			std::cout << "\n\n" << "You couldn't input the right path to root directory." << "\n";
+			std::cout << "Exit program." << "\n";
+			return 1;
 		}
-		break;
 	}
-	
+				
 	high_resolution_clock::time_point t1 = high_resolution_clock::now();
 
 	std::queue <std::string> file_names; // vector of file names with given extensions
@@ -49,10 +46,10 @@ int main()
 	unsigned num_files;
 	CreateQueue(dir, ext_vector, file_names, num_files);
 	
-	unsigned total_lines = 0;
-	unsigned total_code_lines = 0;
-	unsigned total_blank_lines = 0;
-	unsigned total_comment_lines = 0;
+	std::atomic<unsigned int> total_lines(0);
+	std::atomic<unsigned int> total_code_lines(0);
+	std::atomic<unsigned int> total_blank_lines(0);
+	std::atomic<unsigned int> total_comment_lines(0);
 
 	unsigned num_threads = std::thread::hardware_concurrency();
 

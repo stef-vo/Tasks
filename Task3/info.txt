@@ -1,6 +1,6 @@
-Total files: 17461
-Total lines: 2802692
-Total code lines: 1920596
-Total blank lines: 408510
-Total comment lines: 473586
-It took the program 85290 milliseconds to search with 4 threads
+Total files: 8787
+Total lines: 1719676
+Total code lines: 1194531
+Total blank lines: 243392
+Total comment lines: 281753
+It took the program 42046 milliseconds to search with 4 threads
