@@ -76,7 +76,8 @@ int main()
 	std::cout << duration << " milliseconds to search with " << num_threads << " threads";
 	std::cout << "\n\n";
 
-	PrintResult(num_files, total_lines, total_code_lines, total_blank_lines, total_comment_lines);
+	PrintResult(num_files, total_lines, total_code_lines, total_blank_lines, total_comment_lines,
+		duration, num_threads);
 	
 	std::cout << "\n\n";
 

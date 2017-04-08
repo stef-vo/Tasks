@@ -101,7 +101,7 @@ void GetResult(std::queue <std::string> & Tasks, unsigned & total_lines,
 // Prints files info
 void PrintResult(const unsigned & total_files, const unsigned & total_lines,
 				 const unsigned & total_code_lines, const unsigned & total_blank_lines,
-				 const unsigned & total_comment_lines)
+				 const unsigned & total_comment_lines, long long duration, unsigned num_threads)
 {
 	std::cout << "The information will be written to the file \"file.txt\" ";
 	std::cout << "in the current directory." << "\n";
@@ -118,10 +118,13 @@ void PrintResult(const unsigned & total_files, const unsigned & total_lines,
 	output_file << "Total code lines: " << total_code_lines << "\n";
 	output_file << "Total blank lines: " << total_blank_lines << "\n";
 	output_file << "Total comment lines: " << total_comment_lines << "\n";
+	output_file << "It took the program ";
+	output_file << (long long)duration << " milliseconds to search with " << num_threads << " threads";
 	output_file.close();
 	std::cout << "Total files: " << total_files << "\n";
 	std::cout << "Total lines: " << total_lines << "\n";
 	std::cout << "Total code lines: " << total_code_lines << "\n";
 	std::cout << "Total blank lines: " << total_blank_lines << "\n";
 	std::cout << "Total comment lines: " << total_comment_lines << "\n";
+
 }
