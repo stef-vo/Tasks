@@ -53,18 +53,18 @@ int main()
 
 	unsigned num_threads = std::thread::hardware_concurrency();
 
-	std::thread *tt = new std::thread[num_threads];
+	std::thread *threads = new std::thread[num_threads];
 	for (unsigned j = 0; j < num_threads; ++j)
 	{
-		tt[j] = std::thread(GetResult, std::ref(file_names), std::ref(total_lines),
+		threads[j] = std::thread(GetResult, std::ref(file_names), std::ref(total_lines),
 			std::ref(total_code_lines), std::ref(total_blank_lines),
 			std::ref(total_comment_lines));
 	}
 
 	for (unsigned j = 0; j < num_threads; ++j)
-		tt[j].join();
+		threads[j].join();
 		
-	delete[] tt;
+	delete[] threads;
 
 
 	std::cout << "\nIt took the program ";

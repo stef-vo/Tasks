@@ -3,8 +3,10 @@
 static std::mutex result_mutex;
 
 /* Creates queue of files tasks with extensions ext_vector in directory dir. */
-void CreateQueue(std::string dir, std::vector<std::string> ext_vector,
-				std::queue <std::string> & tasks, unsigned & total_files)
+void CreateQueue(std::string dir,
+				 std::vector<std::string> ext_vector,
+				 std::queue <std::string>& tasks,
+				 unsigned& total_files)
 {
 	total_files = 0;
 	boost::filesystem::recursive_directory_iterator current(dir);  
@@ -25,7 +27,7 @@ void CreateQueue(std::string dir, std::vector<std::string> ext_vector,
 }
 
 /* Checks if str is blank. */
-bool IsBlank(const std::string & str)
+bool IsBlank(const std::string& str)
 {
 	int n = str.length();
 	for (int i = 0; i < n; ++i)
@@ -35,8 +37,11 @@ bool IsBlank(const std::string & str)
 }
 
 /* Counts lines in file. */
-void CountLines(std::fstream & file, unsigned & lines, unsigned & code_lines,
-	unsigned & blank_lines, unsigned & comment_lines)
+void CountLines(std::fstream& file,
+				unsigned& lines,
+				unsigned& code_lines,
+				unsigned& blank_lines,
+				unsigned& comment_lines)
 {
 	lines = 0;
 	blank_lines = 0;
@@ -64,9 +69,11 @@ void CountLines(std::fstream & file, unsigned & lines, unsigned & code_lines,
 }
 
 /* Gets files from the queue. */
-void GetResult(std::queue <std::string> & tasks, std::atomic<unsigned> & total_lines,
-				std::atomic<unsigned> & total_code_lines, std::atomic<unsigned> & total_blank_lines,
-				std::atomic<unsigned> & total_comment_lines)
+void GetResult(std::queue <std::string>& tasks,
+			   std::atomic<unsigned>& total_lines,
+			   std::atomic<unsigned>& total_code_lines,
+			   std::atomic<unsigned>& total_blank_lines,
+			   std::atomic<unsigned>& total_comment_lines)
 {
 	unsigned lines;
 	unsigned blank_lines;
@@ -107,9 +114,12 @@ void GetResult(std::queue <std::string> & tasks, std::atomic<unsigned> & total_l
 }
 
 // Prints files info
-void PrintResult(const unsigned & total_files, const std::atomic<unsigned> & total_lines,
-				 const std::atomic<unsigned> & total_code_lines, const std::atomic<unsigned> & total_blank_lines,
-				 const std::atomic<unsigned> & total_comment_lines, long long duration, unsigned num_threads)
+void PrintResult(const unsigned& total_files,
+				 const std::atomic<unsigned>& total_lines,
+				 const std::atomic<unsigned>& total_code_lines,
+				 const std::atomic<unsigned>& total_blank_lines,
+				 const std::atomic<unsigned>& total_comment_lines,
+				 long long duration, unsigned num_threads)
 {
 	std::cout << "The information will be written to the file \"file.txt\" ";
 	std::cout << "in the current directory." << "\n";
